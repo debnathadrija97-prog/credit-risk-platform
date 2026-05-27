@@ -47,7 +47,7 @@ export default function DashboardPage() {
                    innerRadius={60} outerRadius={100}
                    paddingAngle={5} dataKey="value"
                    label={({ name, percent }) =>
-                     `${name} ${(percent*100).toFixed(0)}%`}>
+                     `${name} ${percent ? (percent * 100).toFixed(0) : 0}%`}>
                 {pieData.map((entry, i) => (
                   <Cell key={i} fill={entry.color} />
                 ))}
