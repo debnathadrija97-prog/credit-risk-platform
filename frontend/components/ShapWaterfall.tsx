@@ -38,7 +38,7 @@ export function ShapWaterfall({ drivers }: { drivers: ShapDriver[] }) {
           <XAxis type="number" tickFormatter={v => v.toFixed(2)} />
           <YAxis type="category" dataKey="name" width={160}
                  tick={{ fontSize: 12 }} />
-          <Tooltip formatter={(v: unknown) => (typeof v === 'number' ? v.toFixed(4) : String(v)) as string} />
+          <Tooltip formatter={(v: any) => (typeof v === 'number' ? v.toFixed(4) : v?.toString() ?? '')} />
           <ReferenceLine x={0} stroke="#374151" />
           <Bar dataKey="value" radius={[0, 4, 4, 0]}>
             {data.map((entry, index) => (
