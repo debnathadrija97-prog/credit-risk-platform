@@ -1,11 +1,42 @@
 import axios from 'axios';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://credit-risk-platform.onrender.com';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 export const api = axios.create({
   baseURL: API_BASE,
   headers: { 'Content-Type': 'application/json' }
 });
+
+// Add token to every request automatically
+api.interceptors.request.use((config) => {
+  if (typeof window !== 'undefined') {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+  }
+  return config;
+});
+
+// Redirect to login if token expired, EXCEPT on the login page itself
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    // Check if this error came from the login endpoint
+    const isLoginEndpoint = error.config?.url?.includes('/api/auth/login');
+    
+    // Only redirect if it's a 401 AND it's NOT the login endpoint
+    if (error.response?.status === 401 && !isLoginEndpoint) {
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('token');
+        localStorage.removeItem('full_name');
+        localStorage.removeItem('role');
+        window.location.href = '/login';
+      }
+    }
+    return Promise.reject(error);
+  }
+);
 
 export interface PredictionInput {
   applicant_name: string;

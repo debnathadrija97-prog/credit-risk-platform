@@ -37,6 +37,16 @@ class Application(Base):
     override_reason = Column(Text, nullable=True)
     reviewed_by = Column(String(200), nullable=True)
 
+class User(Base):
+    __tablename__ = 'users'
+
+    id = Column(Integer, primary_key=True, index=True)
+    username = Column(String(50), unique=True, index=True)
+    email = Column(String(100), unique=True, index=True)
+    full_name = Column(String(150))
+    hashed_password = Column(String(200))
+    role = Column(String(20), default='officer')
+    created_at = Column(DateTime, default=datetime.utcnow)
 
 DATABASE_URL = os.getenv('DATABASE_URL')
 engine = create_engine(DATABASE_URL)
